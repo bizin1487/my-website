@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐴 Какая ты лошадь?</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            background: linear-gradient(145deg, #1b3b1b 0%, #2d5e2d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* декоративные элементы — трава, силуэты */
+        body::before {
+            content: "🐎🐴🏇";
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 48px;
+            opacity: 0.1;
+            pointer-events: none;
+            letter-spacing: 40px;
+        }
+
+        .card {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(255, 251, 235, 0.95);
+            backdrop-filter: blur(10px);
+            background: #fdf8ed;
+            border-radius: 60px 20px 60px 20px;
+            box-shadow: 0 30px 40px rgba(0, 0, 0, 0.3), 0 0 0 8px #d4b483, 0 0 0 12px #6b3e1f;
+            padding: 35px 30px 40px;
+            text-align: center;
+            transition: all 0.2s;
+            border: 2px solid #ac7339;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #3b220e;
+            text-shadow: 4px 4px 0 #e0b87b;
+            letter-spacing: 2px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            word-break: break-word;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        h1 span {
+            font-size: 3.2rem;
+            transform: rotate(5deg);
+            display: inline-block;
+        }
+
+        .subhead {
+            font-size: 1.3rem;
+            color: #5a3a1c;
+            font-style: italic;
+            margin-bottom: 30px;
+            border-bottom: 3px dashed #b8865b;
+            padding-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .quiz-box {
+            background: #efe1c6;
+            border-radius: 40px 10px 40px 10px;
+            padding: 25px 20px;
+            box-shadow: inset 0 0 0 2px #b4915f, inset 0 0 15px #aa7e4e;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #2c1a06;
+            margin-bottom: 25px;
+            background: #f3e5d2;
+            display: inline-block;
+            padding: 8px 30px;
+            border-radius: 50px;
+            box-shadow: 0 4px 0 #6b4a2a;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px 20px;
+            margin: 30px 0 20px;
+        }
+
+        .option-btn {
+            background: #faf3e4;
+            border: 4px solid #5d3f1e;
+            color: #2b1a09;
+            padding: 18px 5px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 50px 15px 50px 15px;
+            cursor: pointer;
+            transition: 0.1s ease-in;
+            box-shadow: 0 7px 0 #4a2f14;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+            backdrop-filter: blur(4px);
+            word-break: break-word;
+        }
+
+        .option-btn:hover {
+            background: #ffe9c7;
+            transform: translateY(-2px);
+            box-shadow: 0 9px 0 #4a2f14;
+        }
+
+        .option-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 3px 0 #4a2f14;
+        }
+
+        .result-area {
+            margin-top: 15px;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-btn {
+            background: #c49a6c;
+            border: none;
+            border-bottom: 8px solid #5e2e0f;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #1e2f0c;
+            padding: 20px 35px;
+            border-radius: 60px 10px 60px 10px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #4b2a10, 0 10px 20px rgba(0,0,0,0.2);
+            transition: 0.07s;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            background: #e4b574;
+            color: #231b0e;
+            width: fit-content;
+            margin: 5px auto 10px;
+            border: 3px solid #b5722e;
+        }
+
+        .result-btn:hover {
+            background: #f3ca91;
+            transform: scale(1.01);
+        }
+
+        .result-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #4b2a10, 0 8px 12px rgba(0,0,0,0.2);
+        }
+
+        #horseResult {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 15px 0 5px;
+            padding: 15px 25px;
+            background: #2d1c0b;
+            border-radius: 30px 5px 30px 5px;
+            color: #ffecb3;
+            display: inline-block;
+            border: 5px double #eebb77;
+            box-shadow: 0 0 0 4px #5f3f1c;
+            text-align: center;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .horse-emoji-big {
+            font-size: 3.5rem;
+            line-height: 1;
+        }
+
+        .signature {
+            margin-top: 25px;
+            color: #4e3116;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            opacity: 0.9;
+        }
+
+        .hidden-message {
+            color: #a1520e;
+            font-size: 1.2rem;
+        }
+
+        .hoof {
+            font-size: 2rem;
+        }
+
+        /* адаптивность */
+        @media (max-width: 550px) {
+            .card {
+                padding: 20px 15px;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            .options {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .option-btn {
+                padding: 15px;
+                font-size: 1.2rem;
+            }
+            .result-btn {
+                font-size: 1.8rem;
+                padding: 15px 20px;
+            }
+            #horseResult {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* стили для фейкового прогресса */
+        .fake-progress {
+            font-size: 1rem;
+            color: #6b4423;
+            margin-bottom: 5px;
+        }
+
+        .reset-link {
+            color: #5a3a1c;
+            text-decoration: underline dotted;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 8px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>
+        <span>🐴</span> КАКАЯ ТЫ ЛОШАДЬ? <span>🐴</span>
+    </h1>
+    <div class="subhead">пройди честный тест — узнаешь всю правду</div>
+
+    <div class="quiz-box">
+        <!-- Вопрос -->
+        <div class="question" id="questionText">Что ты выберешь на завтрак?</div>
+
+        <!-- Варианты ответов -->
+        <div class="options" id="optionsContainer">
+            <!-- будут вставлены через JS, но для статики пропишем здесь -->
+        </div>
+
+        <!-- Кнопка "Узнать результат" и результат -->
+        <div class="result-area">
+            <button class="result-btn" id="revealBtn">🔍 Узнать результат</button>
+            <div id="horseResult"></div>
+            <div id="extraMessage" style="min-height: 20px;"></div>
+        </div>
+    </div>
+
+    <div class="signature">
+        <span class="hoof">🐎</span> истина в копытах <span class="hoof">🐎</span>
+    </div>
+    <div style="font-size: 0.9rem; margin-top: 12px; color: #6e4f28;">
+        * выбери вариант и жми кнопку. лошадиная мудрость не дремлет.
+    </div>
+</div>
+
+<script>
+    (function() {
+        // Массив с вопросами (всего один, но стилизован под серьезный тест)
+        const questions = [
+            {
+                text: "🥣 Что ты выберешь на завтрак?",
+                options: ["🌾 Овёс с солью", "🍎 Сладкое яблоко", "🥕 Морковка-гигант", "🍞 Бутерброд с колбасой"]
+            }
+        ];
+
+        let currentQuestionIndex = 0;     // только один вопрос
+        let selectedOption = null;         // индекс выбранного варианта (0-3)
+
+        const questionEl = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const revealBtn = document.getElementById('revealBtn');
+        const horseResultDiv = document.getElementById('horseResult');
+        const extraMessageDiv = document.getElementById('extraMessage');
+
+        // Функция рендера текущего вопроса
+        function renderQuestion() {
+            const q = questions[currentQuestionIndex];
+            questionEl.textContent = q.text;
+            
+            // Очищаем и заполняем кнопки вариантов
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = optText;
+                btn.setAttribute('data-option-index', idx);
+                
+                btn.addEventListener('click', function(e) {
+                    // снимаем выделение со всех кнопок
+                    document.querySelectorAll('.option-btn').forEach(b => {
+                        b.style.background = '#faf3e4';
+                        b.style.borderColor = '#5d3f1e';
+                        b.style.transform = 'scale(1)';
+                    });
+                    // выделяем выбранную
+                    this.style.background = '#ffe0a3';
+                    this.style.borderColor = '#b35400';
+                    this.style.transform = 'scale(1.02)';
+                    
+                    selectedOption = idx;
+                    
+                    // опционально очищаем предыдущий результат при новом выборе
+                    horseResultDiv.innerHTML = '';
+                    extraMessageDiv.innerHTML = '';
+                });
+                
+                optionsContainer.appendChild(btn);
+            });
+
+            // Сбрасываем selectedOption при перерисовке
+            selectedOption = null;
+            // Сбрасываем результат
+            horseResultDiv.innerHTML = '';
+            extraMessageDiv.innerHTML = '';
+        }
+
+        // Функция обработки нажатия на "Узнать результат"
+        function handleReveal() {
+            // Если ни один вариант не выбран — можно напомнить
+            if (selectedOption === null) {
+                horseResultDiv.innerHTML = '⚠️ Сначала выбери, что ты ешь, жеребец!';
+                extraMessageDiv.innerHTML = '';
+                return;
+            }
+
+            // Независимо от выбора — всегда показываем одну фразу "Семен, ты ботяра, а не лошадь"
+            const specialMessage = "Семен, ты ботяра, а не лошадь 🐗💨";
+            
+            // Для красоты добавим эмодзи
+            horseResultDiv.innerHTML = `😤 ${specialMessage}`;
+            
+            // Дополнительно можно что-то в extra
+            extraMessageDiv.innerHTML = '🏇✨ ржать не положено, только ботярить ✨🏇';
+            
+            // Небольшая анимация: трясем результат
+            horseResultDiv.style.animation = 'none';
+            horseResultDiv.offsetHeight; // reflow
+            horseResultDiv.style.animation = 'shake 0.4s ease-in-out';
+            
+            // (опционально) через 0.4 сек убрать анимацию
+            setTimeout(() => {
+                horseResultDiv.style.animation = '';
+            }, 400);
+        }
+
+        // Добавим keyframes для shake
+        const styleSheet = document.createElement("style");
+        styleSheet.textContent = `
+            @keyframes shake {
+                0% { transform: translateX(0); }
+                25% { transform: translateX(-8px); }
+                50% { transform: translateX(8px); }
+                75% { transform: translateX(-4px); }
+                100% { transform: translateX(0); }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+
+        // Инициализация первого вопроса
+        renderQuestion();
+
+        // Слушатель на кнопку
+        revealBtn.addEventListener('click', handleReveal);
+
+        // Дополнительно: можно добавить "сброс" или повторное прохождение (но не обязательно)
+        // Сделаем маленькую кнопку-сброс (в углу или под результатом) но не будем перегружать
+        // По желанию: если дважды нажать на заголовок — обновить
+        const title = document.querySelector('h1');
+        title.addEventListener('dblclick', function() {
+            // сбросить выделение и перерисовать
+            renderQuestion();
+            horseResultDiv.innerHTML = '';
+            extraMessageDiv.innerHTML = '';
+        });
+        
+        // Также сброс по клику на подпись (пасхалка)
+        const signature = document.querySelector('.signature');
+        signature.style.cursor = 'pointer';
+        signature.addEventListener('click', function() {
+            renderQuestion();
+            horseResultDiv.innerHTML = '';
+            extraMessageDiv.innerHTML = '';
+        });
+
+        // Инструкция в консоли (шутка)
+        console.log('%c🐴 Ты думал тут серьезный тест? Ха! Семен — ботяра!', 'font-size:16px; background:brown; color:gold; padding:4px; border-radius:8px;');
+    })();
+</script>
+
+<!-- небольшая подсказка для юзера (как сбросить) -->
+<div style="text-align: center; margin-top: 5px; font-size: 0.8rem; color: #3b2c19;">
+    (двойной клик по заголовку сбрасывает выбор)
+</div>
+
+</body>
+</html>
